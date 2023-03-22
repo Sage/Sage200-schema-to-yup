@@ -1,6 +1,7 @@
-import { YupMixed } from "../mixed";
-import { createRangeConstraint, RangeConstraint } from "./range-constraint";
-import { createNumberGuard, NumberGuard } from "./guard";
+import {YupMixed} from "../mixed";
+import {createRangeConstraint, RangeConstraint} from "./range-constraint";
+import {createNumberGuard, NumberGuard} from "./guard";
+import * as Yup from "yup";
 
 const proceed = (obj, config = {}) => {
   return createNumberGuard(obj, config).verify();
@@ -59,6 +60,11 @@ class YupNumber extends YupMixed {
     return this;
   }
 
+  toNumber(number) {
+    const isNumberRef = this.isStringType(number) && /[(A-z).*]/.test(number);
+    return isNumberRef ? Yup.ref(number) : number;
+  }
+
   range() {
     this.rangeConstraint.add();
   }
@@ -67,8 +73,40 @@ class YupNumber extends YupMixed {
     return this.addConstraint("truncate");
   }
 
+  min() {
+    const min = this.constraints.min;
+    if (this.isNothing(min)) {
+      return this;
+    }
+    const $min = this.toNumber(min);
+    const newBase =
+      $min &&
+      this.base.min(
+        $min,
+        this.validationErrorMessage("min")
+      );
+    this.base = newBase || this.base;
+    return this;
+  }
+
+  max() {
+    const max = this.constraints.min;
+    if (this.isNothing(max)) {
+      return this;
+    }
+    const $max = this.toNumber(max);
+    const newBase =
+      $max &&
+      this.base.min(
+        $max,
+        this.validationErrorMessage("max")
+      );
+    this.base = newBase || this.base;
+    return this;
+  }
+
   round() {
-    const { round } = this.constraints;
+    const {round} = this.constraints;
     if (this.isNothing(round)) {
       return this;
     }
@@ -100,14 +138,14 @@ class YupNumber extends YupMixed {
   }
 
   get isNegative() {
-    const { exclusiveMaximum, negative } = this.constraints;
+    const {exclusiveMaximum, negative} = this.constraints;
     if (negative) return true;
     if (exclusiveMaximum === undefined) return false;
     return exclusiveMaximum === 0;
   }
 
   get isPositive() {
-    const { exclusiveMinimum, positive } = this.constraints;
+    const {exclusiveMinimum, positive} = this.constraints;
     if (positive) return true;
     if (exclusiveMinimum === undefined) return false;
     return exclusiveMinimum === 0;

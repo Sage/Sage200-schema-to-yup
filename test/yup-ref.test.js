@@ -1,4 +1,4 @@
-const { buildYup } = require("../src");
+const {buildYup} = require("../src");
 
 describe("Yup.ref", () => {
 
@@ -16,7 +16,7 @@ describe("Yup.ref", () => {
       },
       type: "object",
     };
-    
+
 
     let dateSchema, config, schema;
     beforeEach(() => {
@@ -37,7 +37,7 @@ describe("Yup.ref", () => {
 
     it("is invalid with invalid data", async () => {
       try {
-        const valid = await schema.isValid({ startDate: 10, endDate: 5 });
+        const valid = await schema.isValid({startDate: 10, endDate: 5});
         expect(valid).toBe(false);
       } catch (e) {
         // console.log(e);
@@ -46,7 +46,7 @@ describe("Yup.ref", () => {
 
     it("is valid with valid data", async () => {
       try {
-        const valid = await schema.isValid({ startDate: 10, endDate: 15 });
+        const valid = await schema.isValid({startDate: 10, endDate: 15});
         expect(valid).toBe(true);
       } catch (e) {
         // console.log(e);
@@ -54,7 +54,7 @@ describe("Yup.ref", () => {
     });
   });
 
-  describe("Number schema for yup.ref", () => {
+  describe("Number schema for yup.ref min", () => {
     const innerSchema = {
       required: ["startLevel", "endLevel"],
       properties: {
@@ -68,7 +68,7 @@ describe("Yup.ref", () => {
       },
       type: "object",
     };
-    
+
 
     let numberSchema, config, schema;
     beforeEach(() => {
@@ -88,21 +88,56 @@ describe("Yup.ref", () => {
     });
 
     it("is invalid with invalid data", async () => {
-      try {
-        const valid = await schema.isValid({ startLevel: 10, endLevel: 5 });
-        expect(valid).toBe(false);
-      } catch (e) {
-        // console.log(e);
-      }
+      const valid = await numberSchema.isValid({startLevel: 10, endLevel: 5});
+      expect(valid).toBe(false);
     });
 
     it("is valid with valid data", async () => {
-      try {
-        const valid = await schema.isValid({ startLevel: 10, endLevel: 15 });
-        expect(valid).toBe(true);
-      } catch (e) {
-        // console.log(e);
-      }
+      const valid = await numberSchema.isValid({startLevel: 10, endLevel: 15});
+      expect(valid).toBe(true);
+    });
+  });
+
+  describe("Number schema for yup.ref max", () => {
+    const innerSchema = {
+      required: ["startLevel", "endLevel"],
+      properties: {
+        startLevel: {
+          type: "number",
+        },
+        endLevel: {
+          type: "number",
+          max: "startLevel",
+        },
+      },
+      type: "object",
+    };
+
+    let numberSchema, config, schema;
+    beforeEach(() => {
+      numberSchema = {
+        $schema: "http://json-schema.org/draft-07/schema#",
+        $id: "http://example.com/login.schema.json",
+        title: "Number",
+        description: "Number form",
+        type: "object",
+        ...innerSchema,
+      };
+
+      config = {
+        // logging: true,
+      };
+      numberSchema = buildYup(numberSchema, config);
+    });
+
+    it("is invalid with invalid data", async () => {
+      const valid = await numberSchema.isValid({startLevel: 10, endLevel: 15});
+      expect(valid).toBe(false);
+    });
+
+    it("is valid with valid data", async () => {
+      const valid = await numberSchema.isValid({startLevel: 10, endLevel: 5});
+      expect(valid).toBe(true);
     });
   });
 
@@ -120,7 +155,7 @@ describe("Yup.ref", () => {
       },
       type: "object",
     };
-    
+
 
     let numberSchema, config, schema;
     beforeEach(() => {
@@ -141,7 +176,10 @@ describe("Yup.ref", () => {
 
     it("is invalid with invalid data", async () => {
       try {
-        const valid = await schema.isValid({ summary: "there once was a dog a bird and a cat", full: "there once was a dog" });
+        const valid = await schema.isValid({
+          summary: "there once was a dog a bird and a cat",
+          full: "there once was a dog"
+        });
         expect(valid).toBe(false);
       } catch (e) {
         // console.log(e);
@@ -150,7 +188,7 @@ describe("Yup.ref", () => {
 
     it("is valid with valid data", async () => {
       try {
-        const valid = await schema.isValid({ summary: "there once was a", full: "there once was a dog and a cat" });
+        const valid = await schema.isValid({summary: "there once was a", full: "there once was a dog and a cat"});
         expect(valid).toBe(true);
       } catch (e) {
         // console.log(e);
