@@ -68,6 +68,8 @@ export class ConstraintBuilder extends TypeMatcher {
       errFn
     };
 
+    // console.log(constrOpts);
+
     const constrainFnNames = [
       "multiValueConstraint",
       "presentConstraintValue",
@@ -104,6 +106,18 @@ export class ConstraintBuilder extends TypeMatcher {
 
   getFirstValue(potentialValues, opts = {}) {
     const {constraintName, type} = opts
+
+    switch (type) {
+      case 'number':
+      case 'integer':
+        switch (constraintName) {
+          case 'positive':
+          case 'negative':
+            return null;
+        }
+        break;
+    }
+
     const isDefined = this.isPresent.bind(this)
     const yupRefConstraints = this.yupRefMap[type]
     const value = potentialValues.filter(isDefined)[0]
@@ -111,8 +125,8 @@ export class ConstraintBuilder extends TypeMatcher {
       const useYupRef = yupRefConstraints.includes(constraintName)
       if (useYupRef && this.isStringType(value)) {
         return Yup.ref(value)
-      }        
-    }    
+      }
+    }
     return value
   }
 
