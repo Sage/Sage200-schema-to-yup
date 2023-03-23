@@ -12,17 +12,20 @@ describe("integer", () => {
     properties: {
       "number": {
         "description": "Age of person",
-        "type": "integer",
-        "moreThan": 0,
-        "max": 130,
-        "default": 32,
-        "required": false,
-        "nullable": true
+        "type": "number",
+        "integer": true,
       }
     },
   };
 
-  schema = buildYup(schema, {});
+  schema = buildYup(schema, {
+    errMessages: {
+      number: {
+        positive: "Must be positive",
+      }
+    },
+    // logging: true,
+  });
 
   test("valid", () => {
     let valid
@@ -35,8 +38,14 @@ describe("integer", () => {
   test("invalid", () => {
     let valid
     valid = schema.isValidSync({
-      value: 1.478
+      number: 1.478
     });
+
+    // valid = schema.validateSync({
+    //   number: 1.478
+    // });
+
+    // console.log(JSON.stringify(schema));
     expect(valid).toBeFalsy();
   });
 });

@@ -113,6 +113,7 @@ export class ConstraintBuilder extends TypeMatcher {
         switch (constraintName) {
           case 'positive':
           case 'negative':
+          case 'integer':
             return null;
         }
         break;

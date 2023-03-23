@@ -121,12 +121,7 @@ class YupNumber extends YupMixed {
   }
 
   integer() {
-    this.isInteger && this.addConstraint("integer");
-    return this;
-  }
-
-  get isInteger() {
-    return this.config.isInteger(this.type);
+    return this.addConstraint("integer");
   }
 
   positive() {
