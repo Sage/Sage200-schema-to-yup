@@ -31,6 +31,15 @@ export class YupBuilder extends Base {
     this.parentNode = parentNode || {};
     this.key = this.parentNode.key;
     this.type = type;
+
+    // Transform type: "integer" to type: "number", integer: true,
+    Object.keys(props).forEach(key => {
+      if (this.config.isInteger(props[key])) {
+        props[key].type = "number";
+        props[key].integer = true;
+      }
+    });
+
     this.properties = {
       ...props,
     };

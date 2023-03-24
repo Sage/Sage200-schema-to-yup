@@ -1,17 +1,15 @@
 const {createNumEntry, createSchema} = require("./_helpers");
 const {buildYup} = require("../../../src");
 
-describe("integer", () => {
+describe("Integer tests (type number with integer constraint)", () => {
   let schema = {
     $schema: "http://json-schema.org/draft-07/schema#",
     $id: "http://example.com/login.schema.json",
     title: "Number",
     description: "Number form",
     type: "object",
-    required: ["startDate", "endDate"],
     properties: {
       "number": {
-        "description": "Age of person",
         "type": "number",
         "integer": true,
       }
@@ -27,7 +25,7 @@ describe("integer", () => {
     // logging: true,
   });
 
-  test("valid", () => {
+  test("Expect integer to be truthy", () => {
     let valid
     valid = schema.isValidSync({
       number: 1
@@ -35,17 +33,51 @@ describe("integer", () => {
     expect(valid).toBeTruthy();
   });
 
-  test("invalid", () => {
+  test("Expect float to be falsy", () => {
     let valid
     valid = schema.isValidSync({
       number: 1.478
     });
+    expect(valid).toBeFalsy();
+  });
+});
 
-    // valid = schema.validateSync({
-    //   number: 1.478
-    // });
+describe("Integer tests (type integer)", () => {
+  let schema = {
+    $schema: "http://json-schema.org/draft-07/schema#",
+    $id: "http://example.com/login.schema.json",
+    title: "Number",
+    description: "Number form",
+    type: "object",
+    properties: {
+      "number": {
+        "type": "integer",
+      }
+    },
+  };
 
-    // console.log(JSON.stringify(schema));
+  schema = buildYup(schema, {
+    errMessages: {
+      number: {
+        positive: "Must be positive",
+      }
+    },
+    // logging: true,
+  });
+
+  test("Expect integer to be truthy", () => {
+    let valid
+    valid = schema.isValidSync({
+      number: 1
+    });
+    expect(valid).toBeTruthy();
+  });
+
+  test("Expect float to be falsy", () => {
+    let valid
+    valid = schema.isValidSync({
+      number: 1.478
+    });
     expect(valid).toBeFalsy();
   });
 });
