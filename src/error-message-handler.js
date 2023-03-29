@@ -1,3 +1,4 @@
+import get from "lodash/get";
 import { TypeMatcher } from "./types/_type-matcher";
 
 export class ErrorMessageHandler extends TypeMatcher {
@@ -69,8 +70,9 @@ export class ErrorMessageHandler extends TypeMatcher {
   }
 
   errMessageFor(msgName) {
-    const { errMessages, key } = this;
-    const errMsg = errMessages[key];
+    const { errMessages, key, keyPath } = this;
+    const fullKeyPath = keyPath ? `${keyPath}.${key}` : key;
+    const errMsg = get(errMessages, fullKeyPath);
     return errMsg ? errMsg[msgName] : errMessages[`$${msgName}`];
   }
 }

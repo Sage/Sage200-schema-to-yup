@@ -21,6 +21,7 @@
   "types": "types/index.d.ts",
   "dependencies": {
     "dashify": "^2.0.0",
+    "lodash": "^4.17.21",
     "uniq": "^1.0.1",
     "uppercamelcase": "^3.0.0",
     "yup": "^0.32.11"

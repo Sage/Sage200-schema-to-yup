@@ -66,7 +66,9 @@ class YupMixed extends Base {
       if (!parentNode) {
         break;
       }
-      keys.push(parentNode.key);
+      if (parentNode.key) {
+        keys.push(parentNode.key);
+      }
       ctx = ctx.parentNode;
     }
     return keys.join(".");

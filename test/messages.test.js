@@ -1,4 +1,4 @@
-const { buildYup } = require("../src");
+const {buildYup} = require("../src");
 
 let valid;
 test("yup inserts custom messages for required fields", () => {
@@ -7,7 +7,7 @@ test("yup inserts custom messages for required fields", () => {
     type: "object",
     required: ["username"],
     properties: {
-      username: { type: "string", matches: "foo" },
+      username: {type: "string", matches: "foo"},
     },
   };
   const config = {
@@ -38,22 +38,24 @@ test("yup inserts custom messages for regex fields", () => {
         type: "object",
         required: ["amazon"],
         properties: {
-          amazon: { type: "string", pattern: /(foo|bar)/ },
+          amazon: {type: "string", pattern: /(foo|bar)/},
         },
       },
     },
   };
   const config = {
     errMessages: {
-      amazon: {
-        pattern: "Pattern must be foo or bar",
+      place: {
+        amazon: {
+          pattern: "Pattern must be foo or bar",
+        },
       },
     },
   };
   try {
     const yupSchema = buildYup(message2, config);
     valid = yupSchema.validateSync({
-      place: { amazon: "xyz" },
+      place: {amazon: "xyz"},
     });
   } catch (e) {
     valid = e.errors[0];
@@ -67,13 +69,13 @@ test("yup uses custom error message function", () => {
     type: "object",
     required: ["amazon"],
     properties: {
-      amazon: { type: "string", pattern: /(foo|bar)/, title: "amazonas" },
+      amazon: {type: "string", pattern: /(foo|bar)/, title: "amazonas"},
     },
   };
   const config = {
     errMessages: {
       amazon: {
-        pattern: (constraints, { title, parentNode }) => {
+        pattern: (constraints, {title, parentNode}) => {
           return `Pattern must be ${constraints.pattern} for ${title}`;
         },
       },
@@ -99,27 +101,30 @@ test("yup uses custom error message function", () => {
         type: "object",
         required: ["amazon"],
         properties: {
-          amazon: { type: "string", pattern: /(foo|bar)/, title: "amazonas" },
+          amazon: {type: "string", pattern: /(foo|bar)/, title: "amazonas"},
         },
       },
     },
   };
   const config = {
-    errMessages: {
-      amazon: {
-        pattern: (constraints, { title, parentNode }) => {
-          return `Pattern must be ${constraints.pattern} for ${title}`;
+      errMessages: {
+        place: {
+          amazon: {
+            pattern: (constraints, {title, parentNode}) => {
+              return `Pattern must be ${constraints.pattern} for ${title}`;
+            },
+          },
         },
       },
-    },
-  };
-  try {
-    const yupSchema = buildYup(message2, config);
-    valid = yupSchema.validateSync({
-      place: { amazon: "zyx" },
-    });
-  } catch (e) {
-    valid = e.errors[0];
-  }
-  expect(valid).toBe("Pattern must be /(foo|bar)/ for amazonas");
-});
+    };
+try {
+  const yupSchema = buildYup(message2, config);
+  valid = yupSchema.validateSync({
+    place: {amazon: "zyx"},
+  });
+} catch (e) {
+  valid = e.errors[0];
+}
+expect(valid).toBe("Pattern must be /(foo|bar)/ for amazonas");
+})
+;
